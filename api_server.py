@@ -51,12 +51,20 @@ from sse_starlette.sse import EventSourceResponse
 EventSourceResponse.DEFAULT_PING_INTERVAL = 1000
 
 # set LLM path
-
-MODEL_PATH = os.environ.get('MODEL_PATH', 'E:\Project\GLM4\glm-4-9b-chat')
-TOKENIZER_PATH = os.environ.get("TOKENIZER_PATH", MODEL_PATH)
-
+# MODEL_PATH = os.environ.get('MODEL_PATH', 'E:\Project\GLM4\glm-4-9b-chat')
+# TOKENIZER_PATH = os.environ.get("TOKENIZER_PATH", MODEL_PATH)
 # set Embedding Model path
-EMBEDDING_PATH = os.environ.get('EMBEDDING_PATH', 'E:\Project\GLM3\[Model]bge-large-zh-v1.5')
+# EMBEDDING_PATH = os.environ.get('EMBEDDING_PATH', 'E:\Project\GLM3\[Model]bge-large-zh-v1.5')
+
+# Set LLM path via command-line arguments
+parser = argparse.ArgumentParser(description="Set model and embedding paths.")
+parser.add_argument('--model_path', type=str, default='E:\Project\GLM4\glm-4-9b-chat', help='Path to the LLM model')
+parser.add_argument('--embedding_path', type=str, default='E:\Project\GLM3\[Model]bge-large-zh-v1.5', help='Path to the embedding model')
+args = parser.parse_args()
+
+MODEL_PATH = args.model_path
+TOKENIZER_PATH = MODEL_PATH
+EMBEDDING_PATH = args.embedding_path
 
 
 @asynccontextmanager
@@ -596,7 +604,6 @@ if __name__ == "__main__":
     quantization_config = BitsAndBytesConfig(load_in_4bit=True)  # 或 load_in_8bit=True
     # Load LLM
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_PATH, trust_remote_code=True)
-    # model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="auto").eval()
     model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="cuda", quantization_config=quantization_config)
     logger.add('apis.log',rotation='5 MB',enqueue=True,serialize=False,encoding='utf-8',retention='10 days')
 

@@ -41,7 +41,7 @@ from contextlib import asynccontextmanager
 from typing import List, Literal, Optional, Union
 from loguru import logger
 from pydantic import BaseModel, Field
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel,BitsAndBytesConfig
 from utils import process_response, generate_chatglm3, generate_stream_chatglm3
 from sentence_transformers import SentenceTransformer
 from tools.schema import tool_class, tool_def, tool_param_start_with
@@ -52,11 +52,11 @@ EventSourceResponse.DEFAULT_PING_INTERVAL = 1000
 
 # set LLM path
 
-MODEL_PATH = os.environ.get('MODEL_PATH', 'THUDM/glm-4-9b-chat-int4')
+MODEL_PATH = os.environ.get('MODEL_PATH', 'E:\Project\GLM4\glm-4-9b-chat')
 TOKENIZER_PATH = os.environ.get("TOKENIZER_PATH", MODEL_PATH)
 
 # set Embedding Model path
-EMBEDDING_PATH = os.environ.get('EMBEDDING_PATH', 'acge_text_embedding')
+EMBEDDING_PATH = os.environ.get('EMBEDDING_PATH', 'E:\Project\GLM3\[Model]bge-large-zh-v1.5')
 
 
 @asynccontextmanager
@@ -593,11 +593,13 @@ def contains_custom_function(value: str, tools: list) -> bool:
 
 
 if __name__ == "__main__":
+    quantization_config = BitsAndBytesConfig(load_in_4bit=True)  # 或 load_in_8bit=True
     # Load LLM
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_PATH, trust_remote_code=True)
-    model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="auto").eval()
+    # model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="auto").eval()
+    model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="cuda", quantization_config=quantization_config)
     logger.add('apis.log',rotation='5 MB',enqueue=True,serialize=False,encoding='utf-8',retention='10 days')
 
     # load Embedding
     embedding_model = SentenceTransformer(EMBEDDING_PATH, device="cuda")
-    uvicorn.run(app, host='0.0.0.0', port=8000, workers=1)
+    uvicorn.run(app, host='0.0.0.0', port=31256, workers=1)

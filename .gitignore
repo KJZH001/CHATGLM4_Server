@@ -1,0 +1,7 @@
+# Python缓存
+__pycache__
+apis.log
+
+# 本地 BAT
+run_api_proxy_4070.bat
+push_git_proxy.bat

@@ -34,6 +34,7 @@ import tiktoken
 import torch
 import uvicorn
 import json
+import argparse
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -65,6 +66,13 @@ args = parser.parse_args()
 MODEL_PATH = args.model_path
 TOKENIZER_PATH = MODEL_PATH
 EMBEDDING_PATH = args.embedding_path
+
+print("======== Model and Tokenizer Paths ========")
+print(f"Model Path: {MODEL_PATH}")
+print(f"Tokenizer Path: {TOKENIZER_PATH}")
+print(f"Embedding Path: {EMBEDDING_PATH}")
+print("===========================================")
+
 
 
 @asynccontextmanager

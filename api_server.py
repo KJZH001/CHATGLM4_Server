@@ -612,7 +612,7 @@ if __name__ == "__main__":
     quantization_config = BitsAndBytesConfig(load_in_4bit=True)  # 或 load_in_8bit=True
     # Load LLM
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_PATH, trust_remote_code=True)
-    model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="cuda", quantization_config=quantization_config)
+    model = AutoModel.from_pretrained(MODEL_PATH, trust_remote_code=True, device_map="auto", quantization_config=quantization_config)
     logger.add('apis.log',rotation='5 MB',enqueue=True,serialize=False,encoding='utf-8',retention='10 days')
 
     # load Embedding

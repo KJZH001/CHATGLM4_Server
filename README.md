@@ -18,3 +18,5 @@ TOKENIZER_PATH = os.environ.get("TOKENIZER_PATH", MODEL_PATH)
 
 # set Embedding Model path
 EMBEDDING_PATH = os.environ.get('EMBEDDING_PATH', 'xxxxxx')
+
+测试环境 Python 3.11.9
